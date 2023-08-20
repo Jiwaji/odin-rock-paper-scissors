@@ -8,7 +8,7 @@ const getComputerChoice = () => {
 const playRound = (playerSelection, computerSelection) => {
     const playerSelectionLower = playerSelection.toLowerCase()
 
-    if(playerSelectionLower === computerSelection.toLowerCase()) {
+    if (playerSelectionLower === computerSelection.toLowerCase()) {
         return -1
     }
 
@@ -33,37 +33,59 @@ const playRound = (playerSelection, computerSelection) => {
     return 1
 }
 
-const game = () => {
-    let playerWins = 0
-    let computerWins = 0
-    for (let i = 0; i < 5; i++) {
-        const playerSelection = prompt(`Choose from Rock / Paper / Scissors for Round ${i+1}`)
-        if(!playerSelection) {
-            console.log("Please enter your response")
-            return
-        }
-        const computerSelection = getComputerChoice()
-        const result = playRound(playerSelection, computerSelection)
-        let message = `Its a DRAW!`
-        if(result === 1) {
-            playerWins += 1
-            message = `You WIN! ${playerSelection.toUpperCase()} beats ${computerSelection}`
-        } 
-        if(result === 0) {
-            computerWins += 1
-            message = `You LOSE! ${playerSelection.toUpperCase()} loses to ${computerSelection}`
-        }
-        
-        console.log(message)
+let playerWins = 0
+let computerWins = 0
+
+const game = (playerSelection) => {
+    if (playerWins >= 5 || computerWins >= 5) {
+        playerWins = 0
+        computerWins = 0
     }
 
-    if(playerWins > computerWins) {
-        console.log(`Player WINS by score of ${playerWins} v ${computerWins}`)
-    } else if (playerWins < computerWins) {
-        console.log(`Computer WINS by score of ${computerWins} vs ${playerWins}`)
-    } else {
-        console.log(`The game is TIED`)
+    const computerSelection = getComputerChoice()
+    const result = playRound(playerSelection, computerSelection)
+
+    let message = `Its a DRAW!`
+    if (result === 1) {
+        playerWins += 1
+        message = `You WIN! ${playerSelection.toUpperCase()} beats ${computerSelection}`
     }
+    if (result === 0) {
+        computerWins += 1
+        message = `You LOSE! ${playerSelection.toUpperCase()} loses to ${computerSelection}`
+    }
+
+    let finalResult = ""
+    if (playerWins === 5) {
+        finalResult = "Player WINS"
+    }
+
+    if (computerWins === 5) {
+        finalResult = "Computer WINS"
+    }
+
+    resultDiv.textContent = `Player - ${playerWins} | Computer -  ${computerWins}\n${message}\n${finalResult}`
 }
 
-game()
+const buttonRock = document.createElement("button")
+buttonRock.textContent = "Rock"
+
+const buttonPaper = document.createElement("button")
+buttonPaper.textContent = "Paper"
+
+const buttonScissors = document.createElement("button")
+buttonScissors.textContent = "Scissors"
+
+const resultDiv = document.createElement('div')
+resultDiv.style.whiteSpace = "pre-wrap"
+resultDiv.textContent = `Player - 0 | Computer - 0`
+
+document.body.appendChild(buttonRock)
+document.body.appendChild(buttonPaper)
+document.body.appendChild(buttonScissors)
+document.body.appendChild(resultDiv)
+
+const buttons = document.querySelectorAll('button')
+buttons.forEach(button => button.addEventListener('click', function (e) {
+    game(this.innerText)
+}))
